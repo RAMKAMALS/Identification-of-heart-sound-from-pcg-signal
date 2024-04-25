@@ -1,0 +1,38 @@
+%IDENTIFICATION OF HEART SOUND FROM THE PCG SIGNAL
+
+% Sample PCG signal generation
+Fs = 900; % Sampling frequency
+t = 0:1/Fs:0.2; % Time vector
+f1 = 50; % First heart sound frequency
+f2 = 120; % Second heart sound frequency
+pcg_signal = 0.7*sin(2*pi*f1*t) + 0.5*sin(2*pi*f2*t);
+% Plot the original PCG signal
+figure;
+plot(t, pcg_signal);
+title('Phonocardiogram (PCG) Signal');
+xlabel('Time (s)');
+ylabel('Amplitude');
+% Perform Fast Fourier Transform (FFT) to analyze frequency components
+N = round(length(pcg_signal));
+frequencies = Fs*(0:(N/2))/N;
+pcg_fft = fft(pcg_signal);
+pcg_fft_magnitude = abs(pcg_fft/N);
+% Plot the FFT of the PCG signal
+figure;
+plot(frequencies, 2*pcg_fft_magnitude(1:N/2+1));
+title('FFT of PCG Signal');
+xlabel('Frequency (Hz)');
+ylabel('Amplitude');
+% Identify heart sounds from the PCG signal
+% Example of simple threshold-based detection
+threshold = 0.1;
+heart_sound_locations = find(pcg_signal > threshold);
+% Plot the PCG signal with detected heart sounds
+figure;
+plot(t, pcg_signal);
+hold on;
+scatter(t(heart_sound_locations), pcg_signal(heart_sound_locations), 'r', 'filled');
+title('PCG Signal with Detected Heart Sounds');
+xlabel('Time (s)');
+ylabel('Amplitude');
+legend('PCG Signal', 'Detected Heart Sounds');
